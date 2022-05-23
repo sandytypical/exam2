@@ -1,0 +1,60 @@
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/ipfs-http-client/dist/index.min.js"></script>
+  <script>
+  const ipfs = window.IpfsHttpClient.create({
+    host: "ipfs.infura.io",
+    port: "5001",
+    protocol: "https"
+  });
+
+  function readFile(file) {
+    const reader = new FileReader();
+    reader.addEventListener('load', async (event) => {
+      const result = event.target.result;
+      // 对结果进行一些操作
+      try {
+        let data = await ipfs.add(result);
+        // console.log(data);
+        let cid = data.path
+        let text = `创建成功：编码: ${cid}, 文件名: ${file.name}`
+        let textNode = document.createElement("p");
+        textNode.innerText = text
+        let span = document.createElement("br")
+        // document.body.appendChild(span)
+        document.body.appendChild(textNode)
+      }
+      catch{
+        let text = `创建失败：文件名: ${file.name}， 请重新点击 '提交文件夹' 按钮`
+        let textNode = document.createElement("p");
+        textNode.innerText = text
+        let span = document.createElement("br")
+        // document.body.appendChild(span)
+        document.body.appendChild(textNode)
+      }
+      // document.body.appendChild(span)
+
+    });
+    reader.readAsArrayBuffer(file);
+}
+
+  function show() {
+    var sth = document.querySelector('#sth');
+    let files = sth.files
+    for (var i = 0; i < files.length; i++) {
+
+    file = files.item(i);
+
+    readFile(file)
+    console.log(file);
+  }
+
+  }
+
+  </script>
+  
+  <label for="sth">
+    <span>选择文件夹</span>
+  </label>
+  <input type="file" id="sth" name="nickname" webkitdirectory>
+  <button onclick="show()">提交文件夹</button>
+</body>
